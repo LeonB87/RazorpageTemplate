@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
@@ -22,7 +23,7 @@ namespace RazorUsingGraphAPI.Pages
 
         public async Task OnGetAsync()
         {
-
+            _logger.LogInformation($"CLaims: {User.Claims.ToList()}");
         }
     }
 }

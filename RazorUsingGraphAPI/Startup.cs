@@ -19,6 +19,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using RazorUsingGraphAPI.Graph;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace RazorUsingGraphAPI
 {
@@ -123,7 +124,7 @@ namespace RazorUsingGraphAPI
                 {
                     var error = WebUtility.UrlEncode(context.Exception.Message);
                     context.Response
-                        .Redirect($"/Home/ErrorWithMessage?message=Authentication+error&debug={error}");
+                        .Redirect($"/Index/ErrorWithMessage?message=Authentication+error&debug={error}");
                     context.HandleResponse();
 
                     return Task.FromResult(0);
@@ -135,7 +136,7 @@ namespace RazorUsingGraphAPI
                     {
                         var error = WebUtility.UrlEncode(context.Failure.Message);
                         context.Response
-                            .Redirect($"/Home/ErrorWithMessage?message=Sign+in+error&debug={error}");
+                            .Redirect($"/Index/ErrorWithMessage?message=Sign+in+error&debug={error}");
                         context.HandleResponse();
                     }
 
@@ -173,12 +174,10 @@ namespace RazorUsingGraphAPI
             })
             // Add the Microsoft Identity UI pages for signin/out
             .AddMicrosoftIdentityUI();
+
             services.AddRazorPages();
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("Employee"));
-            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -5,4 +5,12 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+
+@if (@User.IsInRole("User"))
+{
+    <p>Use this page to detail your site's privacy policy.</p>
+}
+else
+{
+    <p>Access Denied.</p>
+}
