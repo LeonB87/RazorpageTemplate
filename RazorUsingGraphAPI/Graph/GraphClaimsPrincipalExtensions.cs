@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.Graph;
 using System.IO;
+using RazorUsingGraphAPI.Helpers;
 
 namespace RazorUsingGraphAPI.Graph
 {
@@ -85,6 +86,21 @@ namespace RazorUsingGraphAPI.Graph
 
             identity.AddClaim(
                 new Claim(GraphClaimTypes.Photo, photoUrl));
+        }
+
+        public static void AddUSerGroupClaims(this ClaimsPrincipal claimsPrincipal, Dictionary<string, string> roleGroups, IEnumerable<String> memberGroups)
+        {
+
+            var identity = claimsPrincipal.Identity as ClaimsIdentity;
+
+            var claims = memberGroups.Select(groupGuid => new Claim(ClaimTypes.Role, roleGroups[groupGuid]));
+            if (claims != null)
+            {
+                foreach (var claim in claims)
+                {
+                    identity.AddClaim(claim);
+                }
+            }
         }
     }
 }

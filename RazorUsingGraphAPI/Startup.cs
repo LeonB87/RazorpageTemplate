@@ -18,6 +18,7 @@ using Microsoft.Graph;
 using System.Net;
 using System.Net.Http.Headers;
 using RazorUsingGraphAPI.Graph;
+using System.Security.Claims;
 
 namespace RazorUsingGraphAPI
 {
@@ -95,6 +96,27 @@ namespace RazorUsingGraphAPI
                             throw;
                         }
                     }
+
+                    var roleGroups = new Dictionary<string, string>();
+                    Configuration.Bind("AuthorizationGroups", roleGroups);
+                    
+                    if (roleGroups != null)
+                    {
+                        IEnumerable<String> memberGroups = null;
+                        try
+                        {
+                            memberGroups = await GraphServiceExtension.CheckMemberGroupsAsync(roleGroups, graphClient);
+                        }
+                        catch (Exception Ex)
+                        {
+                            throw new Exception($"Error during collecting the role claims: {Ex}");
+                        }
+
+                        if (memberGroups != null)
+                        {
+                            context.Principal.AddUSerGroupClaims(roleGroups, memberGroups);
+                        }
+                    }
                 };
 
                 options.Events.OnAuthenticationFailed = context =>
@@ -152,6 +174,11 @@ namespace RazorUsingGraphAPI
             // Add the Microsoft Identity UI pages for signin/out
             .AddMicrosoftIdentityUI();
             services.AddRazorPages();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("Employee"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

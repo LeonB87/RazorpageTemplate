@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace RazorUsingGraphAPI.Pages
 {
+    [Authorize(Policy = "EmployeeOnly")]
     public class PrivacyModel : PageModel
     {
         private readonly ILogger<PrivacyModel> _logger;
